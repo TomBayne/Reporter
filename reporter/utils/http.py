@@ -4,6 +4,8 @@ import time
 import random
 from typing import Dict
 from reporter.config import USER_AGENTS, MIN_REQUEST_DELAY, RANDOM_DELAY_RANGE
+from fake_useragent import UserAgent
+
 
 class RateLimiter:
     def __init__(self):
@@ -20,7 +22,7 @@ class RateLimiter:
 def get_browser_headers(url: str) -> Dict[str, str]:
     domain = urlparse(url).netloc
     return {
-        'User-Agent': random.choice(USER_AGENTS),
+        'User-Agent': ua.random,
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
         'Accept-Language': 'en-US,en;q=0.5',
         'Accept-Encoding': 'gzip, deflate, br',
