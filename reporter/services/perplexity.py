@@ -81,7 +81,10 @@ async def generate_final_narrative(summaries: List[str]) -> str:
     if not PERPLEXITY_API_KEY:
         raise ValueError("PERPLEXITY_API_KEY not set")
     
-    formatted_summaries = "\n\n---\n\n".join(summaries)
+    # Ensure summaries don't exceed a reasonable length
+    max_chars_per_summary = 2000
+    truncated_summaries = [s[:max_chars_per_summary] for s in summaries]
+    formatted_summaries = "\n\n---\n\n".join(truncated_summaries)
     
     data = {
         "model": PERPLEXITY_MODEL,
@@ -89,13 +92,11 @@ async def generate_final_narrative(summaries: List[str]) -> str:
             "role": "user",
             "content": f"{GENERATE_NARRATIVE_PROMPT}\n\n{formatted_summaries}"
         }],
-        "max_tokens": 2000,  # Increased from 1000
-        "temperature": 0.7,
-        "truncate": None,    # Prevent truncation
-        "stream": False      # Ensure we get complete response
+        "max_tokens": 4000,
+        "temperature": 0.7
     }
 
-    async with httpx.AsyncClient(timeout=120.0) as client:  # Increased timeout
+    async with httpx.AsyncClient(timeout=180.0) as client:
         response = await client.post(
             "https://api.perplexity.ai/chat/completions",
             json=data,
@@ -106,10 +107,4 @@ async def generate_final_narrative(summaries: List[str]) -> str:
         )
         
         result = response.json()
-        content = result['choices'][0]['message']['content']
-        
-        # Ensure we have complete URL brackets
-        if '[' in content and ']' not in content:
-            content = content.rsplit('[', 1)[0].strip()
-            
-        return content
+        return result['choices'][0]['message']['content'].strip()
