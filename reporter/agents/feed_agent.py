@@ -10,7 +10,7 @@ import requests
 
 from reporter.utils.http import rate_limiter
 from reporter.agents.content_agent import fetch_multiple_articles
-from reporter.services.perplexity import summarize_articles, generate_final_narrative
+from reporter.services.oai_compatible import summarize_articles, generate_final_narrative
 
 @lru_cache(maxsize=100)
 def get_feed(url: str) -> str:

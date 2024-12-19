@@ -2,3 +2,5 @@
 output/
 *.pyc
 reporter.egg-info/*
+.DS_Store
+venv

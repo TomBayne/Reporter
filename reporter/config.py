@@ -4,8 +4,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # API Configuration
-PERPLEXITY_API_KEY = os.getenv('PERPLEXITY_API_KEY')
-PERPLEXITY_MODEL = "llama-3.1-sonar-large-128k-chat"
+OAI_COMPATIBLE_API_KEY = os.getenv('OAI_COMPATIBLE_API_KEY')
+OAI_COMPATIBLE_MODEL = os.getenv('OAI_COMPATIBLE_MODEL', 'gpt-4o-mini')
+OAI_COMPATIBLE_API_BASE = os.getenv('OAI_COMPATIBLE_API_BASE', 'https://api.openai.com/v1')
 
 # HTTP Configuration
 MAX_CONNECTIONS = 30
