@@ -65,9 +65,10 @@ def is_article_recent(published: str, max_age_hours: int = 24) -> bool:
         try:
             # Fallback to feedparser's date parsing
             pub_date = datetime(*feedparser._parse_date(published)[:6])
-        except:
-            # If all parsing fails, assume it's current
-            return True
+        except Exception as e:
+            # If all parsing fails, log the error and assume it's NOT current
+            print(f"WARNING: Failed to parse date '{published}' for article. Error: {e}. Skipping article.")
+            return False
     
     age = datetime.now() - pub_date
     return age <= timedelta(hours=max_age_hours)
@@ -92,7 +93,7 @@ async def process_feeds(filename: str, fetch_full_content: bool = True) -> Tuple
             entries = future.result()
             # Filter out old articles
             recent_entries = [
-                entry for entry in entries 
+                entry for entry in entries
                 if is_article_recent(entry['published'])
             ]
             all_entries.extend(recent_entries)
